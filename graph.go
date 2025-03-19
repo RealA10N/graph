@@ -2,6 +2,8 @@ package graph
 
 import (
 	"slices"
+
+	"alon.kr/x/set"
 )
 
 type Node struct {
@@ -134,5 +136,15 @@ func (g *Graph) DominatorJoinGraph(entry uint) DominatorJoinGraph {
 	return DominatorJoinGraph{
 		DominatorTree: dominatorTree,
 		JoinGraph:     joinGraph,
+	}
+}
+
+func (g *Graph) LivenessAnalysis(use []set.Set[uint], def []set.Set[uint]) Liveness {
+	builder := newLivenessBuilder(g, use, def)
+	builder.iterateUntilFixedpoint()
+	return Liveness{
+		Graph:   g,
+		LiveIn:  builder.LiveIn,
+		LiveOut: builder.LiveOut,
 	}
 }
