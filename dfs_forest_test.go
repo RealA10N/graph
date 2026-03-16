@@ -53,6 +53,23 @@ func TestDfsForestSingleComponent(t *testing.T) {
 	assert.EqualValues(t, dfs.PreOrderReversed, dfsForest.PreOrderReversed)
 }
 
+func TestDfsForestReverseChain(t *testing.T) {
+	// 2 -> 1 -> 0  (edges point toward lower indices)
+	// DfsForest visits 0 first, so 1 and 2 each become their own roots
+	// when reached (their forward edges point to already-visited nodes).
+
+	n := uint(3)
+	g := graph.NewGraph([][]uint{{}, {0}, {1}})
+	dfs := g.DfsForest()
+
+	assert.EqualValues(t, []uint{0, 1, 2}, dfs.PreOrder)
+	assert.EqualValues(t, []uint{0, 1, 2}, dfs.PostOrder)
+	assert.EqualValues(t, []uint{0, n + 0, 1, n + 1, 2, n + 2}, dfs.Timeline)
+	assert.EqualValues(t, []uint{0, 1, 2}, dfs.Parent)
+	assert.EqualValues(t, []uint{0, 0, 0}, dfs.Depth)
+	assert.EqualValues(t, []uint{1, 1, 1}, dfs.SubtreeSize)
+}
+
 func TestDfsForestEmpty(t *testing.T) {
 	g := graph.NewGraph([][]uint{})
 	dfs := g.DfsForest()
