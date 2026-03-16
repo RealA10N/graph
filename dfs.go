@@ -1,5 +1,51 @@
 package graph
 
+// DfsUnvisited is a sentinel value used in DfsComponent arrays to indicate
+// that a node does not belong to the component.
+const DfsUnvisited = ^uint(0)
+
+// DfsComponent represents the DFS spanning tree rooted at a single node,
+// covering one weakly-connected component of the graph.
+type DfsComponent struct {
+	// Root is the root node of this DFS spanning tree.
+	Root uint
+
+	// PreOrder[v] is the component-local index of v in the DFS pre-order
+	// traversal. DfsUnvisited for nodes not in this component.
+	PreOrder []uint
+
+	// PreOrderReversed[i] is the node with the i-th index in the component's
+	// pre-order. Only contains nodes in this component.
+	PreOrderReversed []uint
+
+	// PostOrder[v] is the component-local index of v in the DFS post-order
+	// traversal. DfsUnvisited for nodes not in this component.
+	PostOrder []uint
+
+	// Timeline is a slice of length 2k (where k is the component size),
+	// recording each push and pop during DFS. Uses the same encoding as
+	// Dfs.Timeline, with pop offsets relative to the full graph size n.
+	Timeline []uint
+
+	// Parent[v] is the parent of v in the DFS spanning tree.
+	// The root's parent is itself. DfsUnvisited for nodes not in this component.
+	Parent []uint
+
+	// Depth[v] is the depth of v in the DFS spanning tree.
+	// 0 for nodes not in this component (also 0 for the root; use Parent to
+	// distinguish).
+	Depth []uint
+
+	// SubtreeSize[v] is the size of the subtree of v, including v itself.
+	// 0 for nodes not in this component.
+	SubtreeSize []uint
+}
+
+// DfsForest is the result of a complete DFS traversal of all nodes in a graph,
+// covering every weakly-connected component. Each element is the DFS spanning
+// tree for one component.
+type DfsForest []DfsComponent
+
 type Dfs struct {
 	// PreOrder[v] is the index of v in the DFS pre-order traversal.
 	PreOrder []uint

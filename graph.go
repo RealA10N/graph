@@ -101,6 +101,14 @@ func (g *Graph) Dfs(root uint) Dfs {
 	return builder.toDfs()
 }
 
+// Returns a DfsForest covering every node in the graph. One DfsComponent is
+// produced per weakly-connected component (i.e. per DFS tree in the spanning
+// forest). Components are ordered by their root node index.
+func (g *Graph) DfsForest() DfsForest {
+	builder := newDfsForestBuilder(g)
+	return builder.toDfsForest()
+}
+
 // Returns the 'DominatorTree' type that encapsulates the Dominator Tree data
 // structure, and provides efficient queries of the dominators and immediate
 // dominators of nodes.
