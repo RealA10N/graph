@@ -101,6 +101,19 @@ func (g *Graph) Dfs(root uint) Dfs {
 	return builder.toDfs()
 }
 
+// DfsForest performs a depth-first traversal of all nodes in the graph,
+// including nodes unreachable from any single root (disconnected components).
+// Returns a single Dfs result covering all n nodes.
+// Each weakly-connected component is rooted at its lowest-indexed unvisited node,
+// with that root satisfying Parent[root] = root and Depth[root] = 0.
+func (g *Graph) DfsForest() Dfs {
+	builder := newDfsBuilder(g)
+	for root := uint(0); root < g.Size(); root++ {
+		builder.dfs(root, root, 0)
+	}
+	return builder.toDfs()
+}
+
 // Returns the 'DominatorTree' type that encapsulates the Dominator Tree data
 // structure, and provides efficient queries of the dominators and immediate
 // dominators of nodes.
